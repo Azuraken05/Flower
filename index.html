@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beautiful Flower</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Georgia', serif;
+            overflow: hidden;
+        }
+
+        .flower-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .flower-container:hover {
+            transform: scale(1.05);
+        }
+
+        .bloom {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: -10px;
+            z-index: 2;
+        }
+
+        .petal {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: #ff6b9d;
+            border-radius: 50%;
+        }
+
+        .center {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: #ffd700;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 10;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .stem {
+            width: 10px;
+            height: 300px;
+            background: linear-gradient(to bottom, #4a7c2c, #2d5016);
+            border-radius: 5px;
+            position: relative;
+        }
+
+        .leaf {
+            position: absolute;
+            width: 40px;
+            height: 60px;
+            background: #4a7c2c;
+            border-radius: 0 80% 80% 0;
+            transform-origin: left center;
+        }
+
+        .leaf.left {
+            left: -30px;
+            top: 100px;
+            transform: rotate(-40deg);
+        }
+
+        .leaf.right {
+            left: 10px;
+            top: 180px;
+            transform: rotate(140deg) scaleX(-1);
+        }
+
+        .letter-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 500px;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .letter-popup.show {
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .letter-popup h2 {
+            color: #764ba2;
+            margin-top: 0;
+            font-size: 28px;
+        }
+
+        .letter-popup p {
+            color: #333;
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #764ba2;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+        }
+
+        .close-btn:hover {
+            background: #667eea;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+        }
+
+        .overlay.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .play-btn {
+            background: #764ba2;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s ease;
+            justify-content: center;
+        }
+
+        .play-btn:hover {
+            background: #667eea;
+        }
+
+        .image-container {
+            margin-top: 20px;
+            display: none;
+            text-align: center;
+        }
+
+        .image-container.show {
+            display: block;
+        }
+
+        .displayed-image {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="flower-container" onclick="showLetter()">
+        <div class="bloom">
+            <div class="petal" style="top: 10px; left: 60px;"></div>
+            <div class="petal" style="top: 45px; left: 105px;"></div>
+            <div class="petal" style="top: 105px; left: 105px;"></div>
+            <div class="petal" style="top: 105px; left: 15px;"></div>
+            <div class="petal" style="top: 45px; left: 15px;"></div>
+            <div class="center"></div>
+        </div>
+        <div class="stem">
+            <div class="leaf left"></div>
+            <div class="leaf right"></div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="letter-popup" id="letterPopup">
+        <button class="close-btn" onclick="closeLetter()">×</button>
+        <h2>Merry Christmas Letter☃️</h2>
+        <p>
+            This is my Christmas gift I think..? Baka akala mo bat tumigil na ako kagagawa... TBH NATAGALAN AKO SA PAG-GAWA
+            HAHAHA TT_TT that's why I said today I will take a break muna... Kasi, tatapusin ko itong letter nato and surprise!
+            Now its done ito yung nagawa ko hehehe... Another thing kaya hindi ako nagsesend na para ma shock ka MUEHEHHEHEH...
+            Also, idk if mahuhulaan mo yang sa click me... pero hopefully u do! MUEHEHHEE anyways wishing you a good health and hopefully gumaling kana that's
+            All! And advance merry Christmas... (WALA NAKO'Y MA ISIP NA CHRISTMAS GIFT... TBH NAG ASK AKO KAY ATE PIE WAY AHEAD BUT WALA PADIN... Hopefully u will like this...)
+        </p>
+        <p style="text-align: right; font-style: italic; color: #764ba2;">Azurara</p>
+        
+        <button class="play-btn" onclick="showImage()">
+            <span>▶</span> Click me for a surprise
+        </button>
+        
+        <div id="imageContainer" class="image-container">
+            <img id="displayedImage" class="displayed-image" src="https://i.imgur.com/placeholder.jpg" alt="Special Image">
+        </div>
+    </div>
+
+    <script>
+        // Replace this URL with your image URL
+        const imageUrl = 'Binary.png';
+
+        function showLetter() {
+            document.getElementById('letterPopup').classList.add('show');
+            document.getElementById('overlay').classList.add('show');
+        }
+
+        function closeLetter() {
+            document.getElementById('letterPopup').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+            document.getElementById('imageContainer').classList.remove('show');
+        }
+
+        function showImage() {
+            const imageContainer = document.getElementById('imageContainer');
+            imageContainer.classList.add('show');
+        }
+
+        // Load the image when page loads
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('displayedImage').src = imageUrl;
+        });
+
+        document.getElementById('overlay').onclick = closeLetter;
+    </script>
+</body>
+</html>
